@@ -10,11 +10,9 @@ public class Main {
         int managers = scanner.nextInt();
 
         int[] arr = new int[accounts];
-        int accountIndex = 0;
         for (int i = 0; i < accounts; i++) {
             int value = scanner.nextInt();
-            arr[accountIndex] = value;
-            accountIndex++;
+            if (value != 0) arr[i] = value;
         }
 
         System.out.println(check(arr, managers));
@@ -24,13 +22,13 @@ public class Main {
         //если всего 1 менеджер - берём самый большой счет
         if (managers == 1) return Arrays.stream(arr).max().getAsInt();
 
-        long sum = Arrays.stream(arr).mapToLong(i->i).sum();
+        long sum = Arrays.stream(arr).mapToLong(i -> i).sum();
 
         //если сумма по счетам = 0 или суммы не хватает
         if (sum == 0 || (sum / managers) < 1) return 0;
 
         //убираем 0
-        long[] tempArr = Arrays.stream(arr).filter(i -> i != 0).mapToLong(i->i).toArray();
+        long[] tempArr = Arrays.stream(arr).filter(i -> i != 0).mapToLong(i -> i).toArray();
 
         //если на всех счетах одинаковые суммы
         long distinctValues = Arrays.stream(tempArr).distinct().count();

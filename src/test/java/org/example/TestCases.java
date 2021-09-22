@@ -20,6 +20,18 @@ public class TestCases {
     }
 
     @Test
+    @DisplayName("should return 200")
+    public void test1_1() {
+        int[] testArr = {453, 220, 601};
+        long managers = 6;
+        long actual = Main.check(testArr, managers);
+        long expected = 200;
+        Assertions.assertEquals(expected, actual);
+    }
+
+
+
+    @Test
     @DisplayName("should return 50")
     public void test2() {
         int[] testArr = {100, 100, 100, 100};
@@ -415,5 +427,15 @@ public class TestCases {
         long actual = Main.check(big, managers);
         long expected = 100_000_000;
         Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    @DisplayName("should return 1")
+    public void test41() {
+        int[] testArr = {0};
+        long managers = 1;
+        long actual = Main.check(testArr, managers);
+        long expected = 0;
+        Assertions.assertEquals(expected, actual);
     }
 }

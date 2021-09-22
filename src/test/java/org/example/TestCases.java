@@ -2,13 +2,45 @@ package org.example;
 
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 
 public class TestCases {
+    public static int[] arr;
+
+    @BeforeAll
+    public static void createArr() {
+       arr = new int[100_000];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = i;
+        }
+        arr = Arrays.stream(arr).filter(i->i!=0).toArray();
+        arr = Arrays.stream(arr).boxed()
+                .sorted(Collections.reverseOrder())
+                .mapToInt(Integer::intValue)
+                .toArray();
+    }
+
+    @Test
+    @DisplayName("very very big arr. check long time")
+    public void test40_1() {
+        int[] big = arr;
+        long managers = 100_000;
+
+        long actual = Main.check(big, managers);
+        long expected = 100_000_000;
+        Assertions.assertEquals(expected, actual);
+
+        long end = Runtime.getRuntime().freeMemory();
+    }
+
+
+
     @Test
     @DisplayName("should return 200")
     public void test1() {
@@ -28,7 +60,6 @@ public class TestCases {
         long expected = 200;
         Assertions.assertEquals(expected, actual);
     }
-
 
 
     @Test
@@ -395,39 +426,48 @@ public class TestCases {
 
     @Test
     @DisplayName("very very big arr. expect 100_000_000")
-    public void test38(){
+    public void test38() {
         int[] big = new int[100_000];
         Arrays.fill(big, 100_000_000);
         long managers = 1;
 
         long actual = Main.check(big, managers);
         long expected = 100_000_000;
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("very very big arr. expect 100_000_000")
-    public void test39(){
+    public void test39() {
         int[] big = new int[100_000];
         Arrays.fill(big, 100_000_000);
         long managers = 100_000;
 
         long actual = Main.check(big, managers);
         long expected = 100_000_000;
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("very very big arr. expect 100_000_000")
-    public void test40(){
+    public void test40() {
         int[] big = new int[100_000];
         Arrays.fill(big, 100_000_000);
         long managers = 99_999;
 
         long actual = Main.check(big, managers);
         long expected = 100_000_000;
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
+
+
+
+
+
+
+
+
+
 
     @Test
     @DisplayName("should return 1")

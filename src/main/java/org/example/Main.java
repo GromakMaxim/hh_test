@@ -1,7 +1,6 @@
 package org.example;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Scanner;
 
 public class Main {
@@ -13,52 +12,55 @@ public class Main {
         int[] arr = new int[accounts];
         for (int i = 0; i < accounts; i++) {
             int value = scanner.nextInt();
-            if (value != 0) arr[i] = value;
+            if (value !=0) arr[i] = value;
         }
 
         System.out.println(check(arr, managers));
     }
 
-    public static long check(int[] arr, long managers) {
-        //если всего 1 менеджер - берём самый большой счет
-        if (managers == 1) return Arrays.stream(arr).max().getAsInt();
-
+    public static long check(int[] arr, int managers) {
         long sum = Arrays.stream(arr).mapToLong(i -> i).sum();
+        if (sum < managers) return 0;
+        if (managers == 1){
+            return Arrays.stream(arr).mapToLong(i -> i).max().getAsLong();
+        }
 
-        //если суммы не хватает
-        if (sum / managers < 1) return 0;
-
-        //если на всех счетах одинаковые суммы
         long distinctValues = Arrays.stream(arr).distinct().count();
-        if (distinctValues == 1 && managers <= arr.length) return arr[0];
+        if(distinctValues == 1 && managers <= arr.length) return arr[0];
 
-        arr = Arrays.stream(arr)
-                .filter(i -> i != 0)
-                .boxed()
-                .sorted(Collections.reverseOrder())
-                .mapToInt(Integer::intValue)
-                .toArray();
+        return bin(1, (sum / managers)+1, arr, managers);
+    }
 
-        long upperBound = sum / managers;
-
-        long hypothesis = 0;
-        for (long i = 1; i <= upperBound; i++) {
-            long satisfiedManagers = 0;
-            for (long accountSum : arr) {
-                if (accountSum >= i) {
-                    satisfiedManagers += accountSum / i;
-                    if (satisfiedManagers >= managers) {
-                        hypothesis = i;
-                        break;
-                    }
-                } else {
+    public static long bin(long low, long high, int[] arr, int managers) {
+        long mid = (high - low) / 2 + low;//медиана
+        long candidate = 1;
+        while (mid != 1) {
+            int satisfiedManagers = 0;
+            for (int value : arr) {
+                satisfiedManagers += value / mid;
+                if (satisfiedManagers >= managers){
+                    candidate = Math.max(mid, candidate);
                     break;
                 }
             }
-            if (satisfiedManagers < managers && hypothesis != 0) break;
+
+            if (satisfiedManagers < managers) {
+                high = mid;
+            }
+            if (satisfiedManagers > managers) {
+                low = mid;
+            }
+            if (satisfiedManagers == managers){
+                low = mid;
+            }
+            mid = (high - low) / 2 + low;
+            if (candidate == mid) break;
         }
-        return hypothesis;
+
+
+        return candidate;
     }
+
 }
 
 

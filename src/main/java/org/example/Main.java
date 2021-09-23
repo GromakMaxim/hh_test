@@ -6,8 +6,6 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-//        int[]arr = {199, 453, 220, 601,199,199,199};
-//        int managers = 6;
         Scanner scanner = new Scanner(System.in);
         int accounts = scanner.nextInt();
         int managers = scanner.nextInt();
@@ -32,26 +30,19 @@ public class Main {
 
         //если на всех счетах одинаковые суммы
         long distinctValues = Arrays.stream(arr).distinct().count();
-        if (distinctValues == 1 && managers == arr.length) return arr[0];
+        if (distinctValues == 1 && managers <= arr.length) return arr[0];
 
         arr = Arrays.stream(arr)
-                .filter(i->i!=0)
+                .filter(i -> i != 0)
                 .boxed()
                 .sorted(Collections.reverseOrder())
                 .mapToInt(Integer::intValue)
                 .toArray();
 
         long upperBound = sum / managers;
-        long lowerBound = arr[arr.length - 1];
-        if (lowerBound == upperBound) return lowerBound;
-
-        if (lowerBound > upperBound) lowerBound = 1;
-
-        int diff = (int) (upperBound - lowerBound);
-        if (diff == 0) return 1;
 
         long hypothesis = 0;
-        for(long i = lowerBound; i<=upperBound; i++){
+        for (long i = 1; i <= upperBound; i++) {
             long satisfiedManagers = 0;
             for (long accountSum : arr) {
                 if (accountSum >= i) {

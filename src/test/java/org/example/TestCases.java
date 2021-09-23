@@ -19,8 +19,9 @@ public class TestCases {
         for (int i = 0; i < arr.length; i++) {
             arr[i] = i;
         }
-        arr = Arrays.stream(arr).filter(i->i!=0).toArray();
-        arr = Arrays.stream(arr).boxed()
+        arr = Arrays.stream(arr)
+                .filter(i->i!=0)
+                .boxed()
                 .sorted(Collections.reverseOrder())
                 .mapToInt(Integer::intValue)
                 .toArray();
@@ -33,10 +34,8 @@ public class TestCases {
         long managers = 100_000;
 
         long actual = Main.check(big, managers);
-        long expected = 100_000_000;
+        long expected = 33_333;
         Assertions.assertEquals(expected, actual);
-
-        long end = Runtime.getRuntime().freeMemory();
     }
 
 
@@ -459,14 +458,6 @@ public class TestCases {
         long expected = 100_000_000;
         Assertions.assertEquals(expected, actual);
     }
-
-
-
-
-
-
-
-
 
 
     @Test

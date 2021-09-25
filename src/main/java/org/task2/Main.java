@@ -16,11 +16,18 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
+        parse(line);
+    }
 
-        String[] temp = generateStrings(line);
-        gen(temp);
-
-        statistics(stringPool);
+    public static void parse(String input){
+        if (!input.contains("d")){
+            int result = doMath(input);
+            System.out.println(result + " " + "100.00");
+        } else {
+            String[] temp = generateStrings(input);
+            gen(temp);
+            statistics(stringPool);
+        }
     }
 
     public static void statistics(ArrayList<String> strings) {

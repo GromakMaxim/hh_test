@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 
-public class TestCases {
+public class task1_tests {
     public static int[] arr;
 
     @BeforeAll

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class Main {
     private static int totalOperations = 0;
     private static HashMap<Integer, Integer> stat = new HashMap<>();
-    static ArrayList<String> stringPool = new ArrayList<>();
+    public static ArrayList<String> stringPool = new ArrayList<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -18,7 +18,7 @@ public class Main {
     }
 
     public static void parse(String input) {
-        if (!input.contains("d")) {
+        if (!input.contains("d") || input.contains(">") || input.contains("<")) {
             int result = doMath(input);
             System.out.println(result + " " + "100.00");
         } else {
@@ -82,7 +82,39 @@ public class Main {
             return 0;
         } else {
             lexemeBuffer.goToPrevious();
-            return plusminus(lexemeBuffer);
+            return moreless(lexemeBuffer);
+        }
+    }
+
+    public static int moreless(LexemeBuffer lexemeBuffer){
+        int value = plusminus(lexemeBuffer);
+        while (true){
+            Lexeme l = lexemeBuffer.getNext();
+            boolean b;
+            int v;
+            switch (l.type){
+                case LESS:
+                    v = plusminus(lexemeBuffer);
+                    b = value < v;
+                    if (b){
+                        value = 1;
+                    } else {
+                        value = 0;
+                    }
+                    break;
+                case MORE:
+                    v = plusminus(lexemeBuffer);
+                    b = value > v;
+                    if (b){
+                        value = 1;
+                    } else {
+                        value = 0;
+                    }
+                    break;
+                default:
+                    lexemeBuffer.goToPrevious();
+                    return value;
+            }
         }
     }
 
@@ -198,6 +230,14 @@ public class Main {
                     lexemes.add(new Lexeme(LexemeTypes.DIV, ch));
                     pos++;
                     continue;
+                case '>':
+                    lexemes.add(new Lexeme(LexemeTypes.MORE, ch));
+                    pos++;
+                    continue;
+                case '<':
+                    lexemes.add(new Lexeme(LexemeTypes.LESS, ch));
+                    pos++;
+                    continue;
                 default:
                     if (ch <= '9' && ch >= '0') {
                         StringBuilder sb = new StringBuilder();
@@ -211,7 +251,7 @@ public class Main {
                         } while (ch <= '9' && ch >= '0');
 
                         lexemes.add(new Lexeme(LexemeTypes.NUM, sb.toString()));
-                        //sb.setLength(0);
+                        sb.setLength(0);
                     } else {
                         if (ch != ' ') {
                             throw new RuntimeException("Invalid char: " + ch);
@@ -250,6 +290,7 @@ public class Main {
     enum LexemeTypes {
         LBRACKET, RBRACKET,
         PLUS, MINUS, MULT, DIV,
+        LESS, MORE,
         NUM,
         EOL
     }

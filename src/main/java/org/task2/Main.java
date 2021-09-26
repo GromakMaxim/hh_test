@@ -163,20 +163,30 @@ public class Main {
                 if (l.type != LexemeTypes.LBRACKET) {
                     return -1 * Integer.parseInt(l.value);
                 } else {
-                    while (true) {
-                        int curPos = lexemeBuffer.getCurrentPosition()-1;
-                        if (l.type == LexemeTypes.LBRACKET) {
-                            lexemeBuffer.lexemes.remove(curPos);
-                        }
-                        if (l.type == LexemeTypes.PLUS || l.type == LexemeTypes.MINUS) {
-                            lexemeBuffer.swap(curPos);
-                        }
-                        if (l.type == LexemeTypes.RBRACKET){
-                            lexemeBuffer.lexemes.remove(curPos);
-                            break;
+                    int brackets = 0;
+                    int curPos = lexemeBuffer.getCurrentPosition() - 1;
+                    do {
+                        switch (l.type) {
+                            case LBRACKET:
+                                brackets++;
+                                lexemeBuffer.lexemes.remove(curPos);
+                                break;
+                            case RBRACKET:
+                                brackets--;
+                                lexemeBuffer.lexemes.remove(curPos);
+                                curPos--;
+                                lexemeBuffer.goToPrevious();
+                                break;
+                            case PLUS:
+                            case MINUS:
+                                if (brackets % 2 != 0) {
+                                    lexemeBuffer.swap(curPos);
+                                }
+                                break;
                         }
                         l = lexemeBuffer.getNext();
-                    }
+                        curPos++;
+                    } while (brackets != 0);
                     lexemeBuffer.position = 0;
                     return factor(lexemeBuffer);
                 }

@@ -152,7 +152,7 @@ class SimpleMath {
     }
 
     @Test
-    @DisplayName("misus before bracket. multiply. expect -6")
+    @DisplayName("minus before bracket. multiply. expect -6")
     void t18() {
         String input = "-(2*3)";
         int actual = Main.doMath(input);
@@ -161,7 +161,7 @@ class SimpleMath {
     }
 
     @Test
-    @DisplayName("misus before bracket. div. expect -2")
+    @DisplayName("minus before bracket. div. expect -2")
     void t19() {
         String input = "-(6/3)";
         int actual = Main.doMath(input);
@@ -170,7 +170,7 @@ class SimpleMath {
     }
 
     @Test
-    @DisplayName("misus before bracket and inside. multiply. expect 1")
+    @DisplayName("minus before bracket and inside. multiply. expect 1")
     void t20() {
         String input = "-(2-3)";
         int actual = Main.doMath(input);
@@ -179,7 +179,7 @@ class SimpleMath {
     }
 
     @Test
-    @DisplayName("misus before bracket and inside. expect 6")
+    @DisplayName("minus before bracket and inside. expect 6")
     void t21() {
         String input = "-(2-3-5)";
         int actual = Main.doMath(input);
@@ -188,7 +188,7 @@ class SimpleMath {
     }
 
     @Test
-    @DisplayName("misus before bracket and inside. few operations. expect 3")
+    @DisplayName("minus before bracket and inside. few operations. expect 3")
     void t22() {
         String input = "-(1-2+3-4+5-6)";
         int actual = Main.doMath(input);
@@ -197,7 +197,7 @@ class SimpleMath {
     }
 
     @Test
-    @DisplayName("misus before bracket and inside. few operations. expect -21")
+    @DisplayName("minus before bracket and inside. few operations. expect -21")
     void t23() {
         String input = "-(5+10*2-3+5-4-2)";
         int actual = Main.doMath(input);
@@ -206,11 +206,22 @@ class SimpleMath {
     }
 
     @Test
-    @DisplayName("misus before bracket and inside. few operations. expect -21")
+    @DisplayName("minus before bracket and inside. few operations. expect -21")
     void t24() {
         String input = "-(2-(2+2))";
         int actual = Main.doMath(input);
         int expected = 2;
         Assertions.assertEquals(expected, actual);
     }
+
+    @Test
+    @DisplayName("minus before bracket and inside. few operations. expect -21")
+    void t25() {
+        String input = "-(2*(2+2))";
+        int actual = Main.doMath(input);
+        int expected = -8;
+        Assertions.assertEquals(expected, actual);
+    }
+
+
 }

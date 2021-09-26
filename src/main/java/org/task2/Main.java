@@ -162,6 +162,23 @@ public class Main {
                 l = lexemeBuffer.getNext();
                 if (l.type != LexemeTypes.LBRACKET) {
                     return -1 * Integer.parseInt(l.value);
+                } else {
+                    while (true) {
+                        int curPos = lexemeBuffer.getCurrentPosition()-1;
+                        if (l.type == LexemeTypes.LBRACKET) {
+                            lexemeBuffer.lexemes.remove(curPos);
+                        }
+                        if (l.type == LexemeTypes.PLUS || l.type == LexemeTypes.MINUS) {
+                            lexemeBuffer.swap(curPos);
+                        }
+                        if (l.type == LexemeTypes.RBRACKET){
+                            lexemeBuffer.lexemes.remove(curPos);
+                            break;
+                        }
+                        l = lexemeBuffer.getNext();
+                    }
+                    lexemeBuffer.position = 0;
+                    return factor(lexemeBuffer);
                 }
             case NUM:
                 return Integer.parseInt(l.value);
@@ -197,6 +214,24 @@ public class Main {
         public int getCurrentPosition() {
             return position;
         }
+
+        public void replace(int pos, Lexeme lex) {
+            lexemes.set(pos, lex);
+        }
+
+        public void swap(int pos) {
+            Lexeme l = lexemes.get(pos);
+
+            switch (l.type) {
+                case PLUS:
+                    replace(pos, new Lexeme(LexemeTypes.MINUS, '-'));
+                    break;
+                case MINUS:
+                    replace(pos, new Lexeme(LexemeTypes.PLUS, '+'));
+                    break;
+            }
+        }
+
     }
 
 

@@ -85,11 +85,5 @@ public class AdvTests {
         Assertions.assertTrue(isEqual);
     }
 
-    @Test
-    void t4() {
-        String input = "-(5+3)";
-        int actual = Main.doMath(input);
-        int expected = -6;
-        Assertions.assertEquals(expected, actual);
-    }
+
 }

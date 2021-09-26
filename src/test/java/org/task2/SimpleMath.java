@@ -141,4 +141,76 @@ class SimpleMath {
         int expected = -13981560;
         Assertions.assertEquals(expected, actual);
     }
+
+    @Test
+    @DisplayName("minus before bracket. expect -5")
+    void t17() {
+        String input = "-(2+3)";
+        int actual = Main.doMath(input);
+        int expected = -5;
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("misus before bracket. multiply. expect -6")
+    void t18() {
+        String input = "-(2*3)";
+        int actual = Main.doMath(input);
+        int expected = -6;
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("misus before bracket. div. expect -2")
+    void t19() {
+        String input = "-(6/3)";
+        int actual = Main.doMath(input);
+        int expected = -2;
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("misus before bracket and inside. multiply. expect 1")
+    void t20() {
+        String input = "-(2-3)";
+        int actual = Main.doMath(input);
+        int expected = 1;
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("misus before bracket and inside. expect 6")
+    void t21() {
+        String input = "-(2-3-5)";
+        int actual = Main.doMath(input);
+        int expected = 6;
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("misus before bracket and inside. few operations. expect 3")
+    void t22() {
+        String input = "-(1-2+3-4+5-6)";
+        int actual = Main.doMath(input);
+        int expected = 3;
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("misus before bracket and inside. few operations. expect -21")
+    void t23() {
+        String input = "-(5+10*2-3+5-4-2)";
+        int actual = Main.doMath(input);
+        int expected = -21;
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("misus before bracket and inside. few operations. expect -21")
+    void t24() {
+        String input = "-(2-(2+2))";
+        int actual = Main.doMath(input);
+        int expected = 2;
+        Assertions.assertEquals(expected, actual);
+    }
 }

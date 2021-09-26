@@ -7,14 +7,13 @@ import java.util.regex.Pattern;
 
 public class Main {
     private static int totalOperations = 0;
-    private static TreeMap<Integer, Integer> stat = new TreeMap<>();
+    private static TreeMap<Long, Integer> stat = new TreeMap<>();
     public static ArrayList<String> stringPool = new ArrayList<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
         parse(line);
-
     }
 
     public static void parse(String input) {
@@ -22,12 +21,12 @@ public class Main {
             generateStrings(input);
             statistics();
         } else {
-            int result = process(input);
+            long result = process(input);
             System.out.println(result + " " + "100.00");
         }
     }
 
-    public static int process(String input) {
+    public static long process(String input) {
         List<Main.Lexeme> lexemes = lexicalAnalyzer(input);
         LexemeBuffer lb = new LexemeBuffer(lexemes);
         List<Lexeme> tempList = new ArrayList<>(lb.lexemes);
@@ -35,7 +34,7 @@ public class Main {
         return findExpressionInBrackets(tempList);
     }
 
-    public static int findExpressionInBrackets(List<Main.Lexeme> list) {
+    public static long findExpressionInBrackets(List<Main.Lexeme> list) {
         Optional<Lexeme> optional = list.stream()
                 .filter(l -> l.type == Main.LexemeTypes.LBRACKET).findFirst();
 
@@ -44,7 +43,7 @@ public class Main {
 
             int lbracketPos = 0;
             int rbracketPos = 0;
-            //ищем самую последнюю левую скобку и самую первую правую
+
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).type == Main.LexemeTypes.LBRACKET) {
                     lbracketPos = i;
@@ -61,8 +60,7 @@ public class Main {
                 index++;
             }
 
-
-            int value = doMagic(resultList);
+            long value = calculate(resultList);
             index = rbracketPos;
             while (index >= lbracketPos) {
                 list.remove(index);
@@ -74,11 +72,11 @@ public class Main {
                 return findExpressionInBrackets(list);
             }
         }
-        return doMagic(list);
+        return calculate(list);
     }
 
-    public static int doMagic(List<Main.Lexeme> list) {
-        int value = 0;
+    public static long calculate(List<Main.Lexeme> list) {
+        long value = 0;
         Optional multdivCount = list.stream()
                 .filter(l -> l.type == Main.LexemeTypes.MULT || l.type == Main.LexemeTypes.DIV)
                 .findFirst();
@@ -161,7 +159,7 @@ public class Main {
                 }
             }
         }
-
+        if (value == 0) return Long.parseLong(list.get(0).value);
         return value;
     }
 
@@ -171,9 +169,9 @@ public class Main {
     }
 
 
-    public static int calcMORE(int pos, List<Main.Lexeme> list) {
-        int v1 = Integer.parseInt(list.get(pos-1).value);
-        int v2 = Integer.parseInt(list.get(pos+1).value);
+    public static long calcMORE(int pos, List<Main.Lexeme> list) {
+        long v1 = Long.parseLong(list.get(pos - 1).value);
+        long v2 = Long.parseLong(list.get(pos + 1).value);
 
         if (v1 > v2) {
             return 1;
@@ -182,8 +180,8 @@ public class Main {
     }
 
     public static int calcLESS(int pos, List<Main.Lexeme> list) {
-        int v1 = Integer.parseInt(list.get(pos-1).value);
-        int v2 = Integer.parseInt(list.get(pos+1).value);
+        long v1 = Long.parseLong(list.get(pos - 1).value);
+        long v2 = Long.parseLong(list.get(pos + 1).value);
 
         if (v1 < v2) {
             return 1;
@@ -192,7 +190,7 @@ public class Main {
     }
 
 
-    public static int calcPLUS(int pos, List<Main.Lexeme> list) {
+    public static long calcPLUS(int pos, List<Main.Lexeme> list) {
         Main.Lexeme prev = null;
         Main.Lexeme next = null;
 
@@ -212,15 +210,15 @@ public class Main {
             return 0;
         }
         if (prev == null) {
-            return Integer.parseInt(next.value);
+            return Long.parseLong(next.value);
         }
         if (next == null) {
-            return Integer.parseInt(next.value);
+            return Long.parseLong(next.value);
         }
-        return Integer.parseInt(prev.value) + Integer.parseInt(next.value);
+        return Long.parseLong(prev.value) + Long.parseLong(next.value);
     }
 
-    public static int calcMINUS(int pos, List<Main.Lexeme> list) {
+    public static long calcMINUS(int pos, List<Main.Lexeme> list) {
         int prevPos = pos - 1;
         int nextPos = pos + 1;
 
@@ -231,7 +229,7 @@ public class Main {
             prev = list.get(prevPos);
             next = list.get(nextPos);
 
-            return Integer.parseInt(prev.value) - Integer.parseInt(next.value);
+            return Long.parseLong(prev.value) - Long.parseLong(next.value);
         } else {
             if (prevPos < 0) {
                 prev = new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(0));
@@ -247,19 +245,19 @@ public class Main {
         return Integer.parseInt(prev.value) - Integer.parseInt(next.value);
     }
 
-    public static int calcMULT(int pos, List<Main.Lexeme> list) {
+    public static long calcMULT(int pos, List<Main.Lexeme> list) {
         Main.Lexeme l1 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos - 1).value);
         Main.Lexeme l2 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos + 1).value);
-        int v1 = Integer.parseInt(l1.value);
-        int v2 = Integer.parseInt(l2.value);
+        long v1 = Long.parseLong(l1.value);
+        long v2 = Long.parseLong(l2.value);
         return v1 * v2;
     }
 
-    public static int calcDIV(int pos, List<Main.Lexeme> list) {
+    public static long calcDIV(int pos, List<Main.Lexeme> list) {
         Main.Lexeme l1 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos - 1).value);
         Main.Lexeme l2 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos + 1).value);
-        int v1 = Integer.parseInt(l1.value);
-        int v2 = Integer.parseInt(l2.value);
+        long v1 = Long.parseLong(l1.value);
+        long v2 = Long.parseLong(l2.value);
         return v1 / v2;
     }
 
@@ -268,7 +266,7 @@ public class Main {
         Pattern pattern = Pattern.compile("[d]\\d+");//try to find things like: d*
         Matcher matcher = pattern.matcher(input);
         while (matcher.find()) {
-            int value = Integer.parseInt(matcher.group().replace("d", ""));
+            long value = Long.parseLong(matcher.group().replace("d", ""));
             for (int i = 1; i <= value; i++) {
                 String target = matcher.group();
                 String replacement = String.valueOf(i);
@@ -289,7 +287,7 @@ public class Main {
 
     public static void statistics() {
         for (String str : stringPool) {
-            int result = process(str);
+            long result = process(str);
             totalOperations++;
 
             boolean isExist = stat.containsKey(result);
@@ -300,10 +298,11 @@ public class Main {
             }
         }
 
-        for (Map.Entry<Integer, Integer> entry : stat.entrySet()) {
+        for (Map.Entry<Long, Integer> entry : stat.entrySet()) {
             double result = ((double) entry.getValue() / (double) totalOperations) * 100;
-            String formatted = new DecimalFormat("#0.00").format(result).replace(',', '.');
-            System.out.println(entry.getKey() + " " + formatted);
+            DecimalFormat f = new DecimalFormat("##.00");
+
+            System.out.println(entry.getKey() + " " + f.format(result).replace(',', '.'));
         }
     }
 

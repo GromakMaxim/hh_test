@@ -22,10 +22,247 @@ public class Main {
             generateStrings(input);
             statistics();
         } else {
-            int result = doMath(input);
+            int result = process(input);
             System.out.println(result + " " + "100.00");
         }
     }
+
+    public static int process(String input) {
+        List<Main.Lexeme> lexemes = lexicalAnalyzer(input);
+        LexemeBuffer lb = new LexemeBuffer(lexemes);
+        List<Lexeme> tempList = new ArrayList<>(lb.lexemes);
+
+        return findExpressionInBrackets(tempList);
+    }
+
+    public static int findExpressionInBrackets(List<Main.Lexeme> list) {
+        Optional<Lexeme> optional = list.stream()
+                .filter(l -> l.type == Main.LexemeTypes.LBRACKET).findFirst();
+
+        if (optional.isPresent()) {
+            List<Main.Lexeme> resultList = new ArrayList<>();
+
+            int lbracketPos = 0;
+            int rbracketPos = 0;
+            //ищем самую последнюю левую скобку и самую первую правую
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).type == Main.LexemeTypes.LBRACKET) {
+                    lbracketPos = i;
+                }
+                if (list.get(i).type == Main.LexemeTypes.RBRACKET) {
+                    rbracketPos = i;
+                    break;
+                }
+            }
+
+            int index = lbracketPos + 1;
+            while (index < rbracketPos) {
+                resultList.add(list.get(index));
+                index++;
+            }
+
+
+            int value = doMagic(resultList);
+            index = rbracketPos;
+            while (index >= lbracketPos) {
+                list.remove(index);
+                index--;
+            }
+            list.add(lbracketPos, new Main.Lexeme(LexemeTypes.NUM, String.valueOf(value)));
+
+            if (isBracketsStillExist(list)) {
+                return findExpressionInBrackets(list);
+            }
+        }
+        return doMagic(list);
+    }
+
+    public static int doMagic(List<Main.Lexeme> list) {
+        int value = 0;
+        Optional multdivCount = list.stream()
+                .filter(l -> l.type == Main.LexemeTypes.MULT || l.type == Main.LexemeTypes.DIV)
+                .findFirst();
+
+        if (multdivCount.isPresent()) {
+            for (int i = 0; i < list.size(); i++) {
+                Main.Lexeme l = list.get(i);
+                switch (l.type) {
+                    case MULT:
+                        value = calcMULT(i, list);
+                        list.set(i, new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(value)));
+                        list.remove(i + 1);
+                        list.remove(i - 1);
+                        i = 0;
+                        break;
+                    case DIV:
+                        value = calcDIV(i, list);
+                        list.set(i, new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(value)));
+                        list.remove(i + 1);
+                        list.remove(i - 1);
+                        i = 0;
+                        break;
+                }
+            }
+        }
+
+        Optional plusminus = list.stream()
+                .filter(l -> l.type == Main.LexemeTypes.PLUS || l.type == Main.LexemeTypes.MINUS)
+                .findFirst();
+
+        if (plusminus.isPresent()) {
+            for (int i = 0; i < list.size() - 1; i++) {
+                Main.Lexeme l = list.get(i);
+                switch (l.type) {
+                    case PLUS:
+                        value = calcPLUS(i, list);
+                        list.set(i, new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(value)));
+                        list.remove(i + 1);
+                        list.remove(i - 1);
+                        i = 0;
+                        break;
+                    case MINUS:
+                        value = calcMINUS(i, list);
+                        if (list.get(0).type != Main.LexemeTypes.NUM) {
+                            list.set(i, new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(value)));
+                            list.remove(i + 1);
+                        } else {
+                            list.set(i, new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(value)));
+                            list.remove(i + 1);
+                            list.remove(i - 1);
+                        }
+                        i = 0;
+                        break;
+                }
+            }
+        }
+
+        Optional moreless = list.stream()
+                .filter(l -> l.type == Main.LexemeTypes.MORE || l.type == Main.LexemeTypes.LESS)
+                .findFirst();
+
+        if (moreless.isPresent()) {
+            for (int i = 0; i < list.size(); i++) {
+                Main.Lexeme l = list.get(i);
+                switch (l.type) {
+                    case MORE:
+                        value = calcMORE(i, list);
+                        list.set(i, new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(value)));
+                        list.remove(i + 1);
+                        list.remove(i - 1);
+                        i = 0;
+                        break;
+                    case LESS:
+                        value = calcLESS(i, list);
+                        list.set(i, new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(value)));
+                        list.remove(i + 1);
+                        list.remove(i - 1);
+                        i = 0;
+                        break;
+                }
+            }
+        }
+
+        return value;
+    }
+
+    public static boolean isBracketsStillExist(List<Main.Lexeme> list) {
+        long bracketsNumber = list.stream().filter(l -> l.type == Main.LexemeTypes.LBRACKET).count();
+        return bracketsNumber > 0;
+    }
+
+
+    public static int calcMORE(int pos, List<Main.Lexeme> list) {
+        int v1 = Integer.parseInt(list.get(pos-1).value);
+        int v2 = Integer.parseInt(list.get(pos+1).value);
+
+        if (v1 > v2) {
+            return 1;
+        }
+        return 0;
+    }
+
+    public static int calcLESS(int pos, List<Main.Lexeme> list) {
+        int v1 = Integer.parseInt(list.get(pos-1).value);
+        int v2 = Integer.parseInt(list.get(pos+1).value);
+
+        if (v1 < v2) {
+            return 1;
+        }
+        return 0;
+    }
+
+
+    public static int calcPLUS(int pos, List<Main.Lexeme> list) {
+        Main.Lexeme prev = null;
+        Main.Lexeme next = null;
+
+        try {
+            prev = list.get(pos - 1);
+        } catch (Exception e) {
+
+        }
+
+        try {
+            next = list.get(pos + 1);
+        } catch (Exception e) {
+
+        }
+
+        if (prev == null && next == null) {
+            return 0;
+        }
+        if (prev == null) {
+            return Integer.parseInt(next.value);
+        }
+        if (next == null) {
+            return Integer.parseInt(next.value);
+        }
+        return Integer.parseInt(prev.value) + Integer.parseInt(next.value);
+    }
+
+    public static int calcMINUS(int pos, List<Main.Lexeme> list) {
+        int prevPos = pos - 1;
+        int nextPos = pos + 1;
+
+        Main.Lexeme prev = null;
+        Main.Lexeme next = null;
+
+        if (prevPos >= 0 && nextPos < list.size()) {
+            prev = list.get(prevPos);
+            next = list.get(nextPos);
+
+            return Integer.parseInt(prev.value) - Integer.parseInt(next.value);
+        } else {
+            if (prevPos < 0) {
+                prev = new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(0));
+                next = list.get(nextPos);
+            }
+            if (nextPos > list.size()) {
+                prev = new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(prevPos));
+                next = new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(0));
+            }
+
+        }
+
+        return Integer.parseInt(prev.value) - Integer.parseInt(next.value);
+    }
+
+    public static int calcMULT(int pos, List<Main.Lexeme> list) {
+        Main.Lexeme l1 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos - 1).value);
+        Main.Lexeme l2 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos + 1).value);
+        int v1 = Integer.parseInt(l1.value);
+        int v2 = Integer.parseInt(l2.value);
+        return v1 * v2;
+    }
+
+    public static int calcDIV(int pos, List<Main.Lexeme> list) {
+        Main.Lexeme l1 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos - 1).value);
+        Main.Lexeme l2 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos + 1).value);
+        int v1 = Integer.parseInt(l1.value);
+        int v2 = Integer.parseInt(l2.value);
+        return v1 / v2;
+    }
+
 
     public static void generateStrings(String input) {
         Pattern pattern = Pattern.compile("[d]\\d+");//try to find things like: d*
@@ -52,7 +289,7 @@ public class Main {
 
     public static void statistics() {
         for (String str : stringPool) {
-            int result = doMath(str);
+            int result = process(str);
             totalOperations++;
 
             boolean isExist = stat.containsKey(result);
@@ -67,116 +304,6 @@ public class Main {
             double result = ((double) entry.getValue() / (double) totalOperations) * 100;
             String formatted = new DecimalFormat("#0.00").format(result).replace(',', '.');
             System.out.println(entry.getKey() + " " + formatted);
-        }
-    }
-
-    public static int doMath(String expression) {
-        List<Lexeme> lexemes = lexicalAnalyzer(expression);
-        LexemeBuffer lb = new LexemeBuffer(lexemes);
-        return expr(lb);
-    }
-
-    public static int expr(LexemeBuffer lexemeBuffer) {
-        Lexeme l = lexemeBuffer.getNext();
-        if (l.type == LexemeTypes.EOL) {
-            return 0;
-        } else {
-            lexemeBuffer.goToPrevious();
-            return moreless(lexemeBuffer);
-        }
-    }
-
-    public static int moreless(LexemeBuffer lexemeBuffer) {
-        int value = plusminus(lexemeBuffer);
-        while (true) {
-            Lexeme l = lexemeBuffer.getNext();
-            boolean b;
-            int v;
-            switch (l.type) {
-                case LESS:
-                    v = plusminus(lexemeBuffer);
-                    b = value < v;
-                    if (b) {
-                        value = 1;
-                    } else {
-                        value = 0;
-                    }
-                    break;
-                case MORE:
-                    v = plusminus(lexemeBuffer);
-                    b = value > v;
-                    if (b) {
-                        value = 1;
-                    } else {
-                        value = 0;
-                    }
-                    break;
-                default:
-                    lexemeBuffer.goToPrevious();
-                    return value;
-            }
-        }
-    }
-
-    public static int plusminus(LexemeBuffer lexemeBuffer) {
-        int value = multdiv(lexemeBuffer);
-        while (true) {
-            Lexeme l = lexemeBuffer.getNext();
-            switch (l.type) {
-                case PLUS:
-                    value += multdiv(lexemeBuffer);
-                    break;
-                case MINUS:
-                    value -= multdiv(lexemeBuffer);
-                    break;
-                default:
-                    lexemeBuffer.goToPrevious();
-                    return value;
-            }
-        }
-    }
-
-    public static int multdiv(LexemeBuffer lexemeBuffer) {
-        int value = factor(lexemeBuffer);
-        while (true) {
-            Lexeme l = lexemeBuffer.getNext();
-            switch (l.type) {
-                case MULT:
-                    value *= factor(lexemeBuffer);
-                    break;
-                case DIV:
-                    value /= factor(lexemeBuffer);
-                    break;
-                default:
-                    lexemeBuffer.goToPrevious();
-                    return value;
-            }
-
-        }
-    }
-
-    public static int factor(LexemeBuffer lexemeBuffer) {
-        Lexeme l = lexemeBuffer.getNext();
-        switch (l.type) {
-            case MINUS: //warn! '-' might be first in parsed line
-                l = lexemeBuffer.getNext();
-                if (l.type != LexemeTypes.LBRACKET) {
-                    return -1 * Integer.parseInt(l.value);
-                } else {
-                    return -1 * plusminus(lexemeBuffer);
-                }
-            case NUM:
-                return Integer.parseInt(l.value);
-            case LBRACKET:
-                int value = expr(lexemeBuffer);
-                l = lexemeBuffer.getNext();
-
-                if (l.type != LexemeTypes.RBRACKET) {
-                    throw new RuntimeException("Illegal expr at: " + lexemeBuffer.getCurrentPosition() + ". Did you miss the bracket?");
-                }
-                return value;
-            default:
-                throw new RuntimeException("Illegal expr at: " + lexemeBuffer.getCurrentPosition());
         }
     }
 

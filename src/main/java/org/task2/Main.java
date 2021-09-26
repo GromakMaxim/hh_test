@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Main {
     private static int totalOperations = 0;
-    private static HashMap<Integer, Integer> stat = new HashMap<>();
+    private static TreeMap<Integer, Integer> stat = new TreeMap<>();
     public static ArrayList<String> stringPool = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -18,12 +18,12 @@ public class Main {
     }
 
     public static void parse(String input) {
-        if (!input.contains("d") || input.contains(">") || input.contains("<")) {
+        if (input.contains("d")) {
+            generateStrings(input);
+            statistics();
+        } else {
             int result = doMath(input);
             System.out.println(result + " " + "100.00");
-        } else {
-            generateStrings(input);
-            statistics(stringPool);
         }
     }
 
@@ -50,8 +50,8 @@ public class Main {
         }
     }
 
-    public static void statistics(ArrayList<String> strings) {
-        for (String str : strings) {
+    public static void statistics() {
+        for (String str : stringPool) {
             int result = doMath(str);
             totalOperations++;
 
@@ -86,17 +86,17 @@ public class Main {
         }
     }
 
-    public static int moreless(LexemeBuffer lexemeBuffer){
+    public static int moreless(LexemeBuffer lexemeBuffer) {
         int value = plusminus(lexemeBuffer);
-        while (true){
+        while (true) {
             Lexeme l = lexemeBuffer.getNext();
             boolean b;
             int v;
-            switch (l.type){
+            switch (l.type) {
                 case LESS:
                     v = plusminus(lexemeBuffer);
                     b = value < v;
-                    if (b){
+                    if (b) {
                         value = 1;
                     } else {
                         value = 0;
@@ -105,7 +105,7 @@ public class Main {
                 case MORE:
                     v = plusminus(lexemeBuffer);
                     b = value > v;
-                    if (b){
+                    if (b) {
                         value = 1;
                     } else {
                         value = 0;

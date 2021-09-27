@@ -240,18 +240,6 @@ public class AdvTests {
         Assertions.assertEquals(expected, actual);
     }
 
-//    @Test
-//    @DisplayName("overflow")
-//    void t16() {
-//        String input = "d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)";
-//        Main.parse(input);
-//        String actual = output.toString();
-//
-//
-//        String expected = "0 100.00\r\n";
-//        Assertions.assertEquals(expected, actual);
-//    }
-
     @Test
     void t17() {
         String input = "d4-d6+d6";
@@ -264,5 +252,22 @@ public class AdvTests {
         Assertions.assertEquals(expected, actual);
     }
 
+    @Test
+    @DisplayName("might be overflown")
+    void t18() {
+        Main.parse("d100*d100*d100");
+    }
+
+    @Test
+    @DisplayName("overflow")
+    void t19() {
+        String input = "d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)+d4+(d6>2)";
+        Main.parse(input);
+        String actual = output.toString();
+
+
+        String expected = "0 100.00\r\n";
+        Assertions.assertEquals(expected, actual);
+    }
 
 }

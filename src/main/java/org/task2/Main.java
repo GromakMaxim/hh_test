@@ -291,18 +291,25 @@ public class Main {
     }
 
     public static void statistics() {
-        long operations = stat.values().stream().mapToLong(i -> i).sum();
+        double operations = stat.values().stream().mapToDouble(i -> i).sum();
 
         for (Map.Entry<Long, Long> entry : stat.entrySet()) {
-            double result = ((double) entry.getValue() / (double) operations) * 100;
-            result = Math.round(result * 100.0) / 100.0;
+            double value = entry.getValue();
+            double div = value / operations;
+            double result = div * 100.0;
+
+            result = (double)Math.round(result * 100.0) / 100.0;
 
             String print;
             if (result >= 1) {
                 DecimalFormat f = new DecimalFormat("##.00");
                 print = f.format(result).replace(",", ".");
             } else {
-                print = String.valueOf(result);
+                if (result == 0.0){
+                    print = result+"0";
+                } else {
+                    print = String.valueOf(result);
+                }
             }
 
             System.out.println(entry.getKey() + " " + print);

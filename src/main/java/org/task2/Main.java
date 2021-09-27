@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 public class Main {
     private static TreeMap<Long, Long> stat;
-    public static ArrayList<String> stringPool;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -17,7 +16,6 @@ public class Main {
 
     public static void parse(String input) {
         stat = new TreeMap<>();
-        stringPool = new ArrayList<>();
         if (input.contains("d")) {
             generateStrings(input);
             statistics();
@@ -186,6 +184,7 @@ public class Main {
     }
 
 
+    //warn! need to test this method & simplify
     public static long calcPLUS(int pos, List<Main.Lexeme> list) {
         Main.Lexeme prev = null;
         Main.Lexeme next = null;
@@ -275,21 +274,10 @@ public class Main {
                     long resultLine = process(newString);
                     statistics(resultLine);
                 } else {
-                    stringPool.add(newString);
+                    generateStrings(newString);
                 }
             }
             break;
-        }
-
-        if (stringPool.size() != 0) {
-
-            for (int i = 0; i < stringPool.size(); i++) {
-                String current = stringPool.get(i);
-                if (current.contains("d")) {
-                    stringPool.remove(i);
-                    generateStrings(current);
-                }
-            }
         }
     }
 

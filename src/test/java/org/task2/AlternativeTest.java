@@ -441,12 +441,12 @@ class AlternativeTest {
         Assertions.assertEquals(expected, actual);
     }
 
-    @Test
-    @DisplayName("overflow")
-    void t55() {
-        long expected = 0;
-        Main.parse("d100*d100*d100");
-    }
+//    @Test
+//    @DisplayName("overflow")
+//    void t55() {
+//        long expected = 0;
+//        Main.parse("d100*d100*d100");
+//    }
 
 
     @Test

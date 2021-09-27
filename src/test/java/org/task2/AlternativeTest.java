@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class AlternativeTest {
 
 
@@ -159,7 +157,7 @@ class AlternativeTest {
     void t19() {
         long expected = 0;
         long actual = Main.process("1>1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -167,7 +165,7 @@ class AlternativeTest {
     void t20() {
         long expected = 0;
         long actual = Main.process("1+1 < 1+1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -175,7 +173,7 @@ class AlternativeTest {
     void t21() {
         long expected = 0;
         long actual = Main.process("1+1 > 1+1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -183,15 +181,15 @@ class AlternativeTest {
     void t22() {
         long expected = 0;
         long actual = Main.process("2*5+5 > 5*3");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("expect 0. testcase: 2*5+5 < 5*3")
     void t23() {
         long expected = 0;
-        long actual =Main.process("2*5+5 < 5*3");
-        Assertions.assertEquals(expected,actual);
+        long actual = Main.process("2*5+5 < 5*3");
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -199,7 +197,7 @@ class AlternativeTest {
     void t24() {
         long expected = 0;
         long actual = Main.process("1000000 < 1000000");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -207,7 +205,7 @@ class AlternativeTest {
     void t25() {
         long expected = 1;
         long actual = Main.process("4*2 < 4*3 < 4*5");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -215,7 +213,7 @@ class AlternativeTest {
     void t26() {
         long expected = 0;
         long actual = Main.process("5<1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -223,7 +221,7 @@ class AlternativeTest {
     void t27() {
         long expected = 0;
         long actual = Main.process("5+3<1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -231,7 +229,7 @@ class AlternativeTest {
     void t28() {
         long expected = 0;
         long actual = Main.process("5+5<1+1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -239,7 +237,7 @@ class AlternativeTest {
     void t29() {
         long expected = 1;
         long actual = Main.process("5+5<10+10");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -247,7 +245,7 @@ class AlternativeTest {
     void t30() {
         long expected = 0;
         long actual = Main.process("5+3*2<1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -255,7 +253,7 @@ class AlternativeTest {
     void t31() {
         long expected = 0;
         long actual = Main.process("1 < 1-1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -263,7 +261,7 @@ class AlternativeTest {
     void t32() {
         long expected = 1;
         long actual = Main.process("1 < 1*1+2");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -271,7 +269,7 @@ class AlternativeTest {
     void t33() {
         long expected = 0;
         long actual = Main.process("1*2+(3-(1*2)) < 1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -279,7 +277,7 @@ class AlternativeTest {
     void t34() {
         long expected = 0;
         long actual = Main.process("5<2<0");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -287,7 +285,7 @@ class AlternativeTest {
     void t35() {
         long expected = 0;
         long actual = Main.process("5+5 < 2*2 < 0-5");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -295,7 +293,7 @@ class AlternativeTest {
     void t36() {
         long expected = 1;
         long actual = Main.process("1*(2+2*(1*10-5*2)) < 3");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -303,7 +301,7 @@ class AlternativeTest {
     void t37() {
         long expected = 1;
         long actual = Main.process("5>1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
 
@@ -312,7 +310,7 @@ class AlternativeTest {
     void t38() {
         long expected = 1;
         long actual = Main.process("5+3>1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -320,7 +318,7 @@ class AlternativeTest {
     void t39() {
         long expected = 1;
         long actual = Main.process("5+5>1+1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -328,7 +326,7 @@ class AlternativeTest {
     void t40() {
         long expected = 0;
         long actual = Main.process("5+5>10+10");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -336,7 +334,7 @@ class AlternativeTest {
     void t41() {
         long expected = 1;
         long actual = Main.process("5+3*2>1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -344,7 +342,7 @@ class AlternativeTest {
     void t42() {
         long expected = 1;
         long actual = Main.process("1 > 1-1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -352,7 +350,7 @@ class AlternativeTest {
     void t43() {
         long expected = 0;
         long actual = Main.process("1 > 1*1+2");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -360,7 +358,7 @@ class AlternativeTest {
     void t44() {
         long expected = 1;
         long actual = Main.process("1*2+(3-(1*2)) > 1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -368,7 +366,7 @@ class AlternativeTest {
     void t45() {
         long expected = 1;
         long actual = Main.process("1*2+(3-(1*2)) > 1");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -376,7 +374,7 @@ class AlternativeTest {
     void t46() {
         long expected = 1;
         long actual = Main.process("5>2>0");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -384,7 +382,7 @@ class AlternativeTest {
     void t47() {
         long expected = 1;
         long actual = Main.process("5+5>2*2>0-5");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -392,22 +390,61 @@ class AlternativeTest {
     void t48() {
         long expected = 0;
         long actual = Main.process("1*(2+2*(1*10-5*2)) > 3");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    @DisplayName("expect 0. testcase: 1+(1>2)")
+    @DisplayName("expect 1. testcase: 1+(1>2)")
     void t49() {
         long expected = 1;
         long actual = Main.process("1+(1>2)");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    @DisplayName("expect 0. testcase: 1>(1>2)")
+    @DisplayName("expect 1. testcase: 1>(1>2)")
     void t50() {
         long expected = 1;
         long actual = Main.process("1>(1>2)");
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("expect 1. testcase: 1>(-(1>2))")
+    void t51() {
+        long expected = 1;
+        long actual = Main.process("1>(-(1>2))");
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("expect 1. testcase: 1>-(3>2)")
+    void t52() {
+        long expected = 1;
+        long actual = Main.process("1>-(3>2)");
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("expect 16. testcase: 8/2*(2+2)")
+    void t53() {
+        long expected = 16;
+        long actual = Main.process("8/2*(2+2)");
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("expect 0. testcase: 0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0")
+    void t54() {
+        long expected = 0;
+        long actual = Main.process("0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0");
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("expect 0. testcase: d100*d100*d100")
+    void t55() {
+        long expected = 0;
+        Main.parse("d100*d100*d100");
     }
 }

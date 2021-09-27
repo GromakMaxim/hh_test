@@ -125,8 +125,13 @@ public class Main {
                             list.remove(i + 1);
                         } else {
                             list.set(i, new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(value)));
-                            list.remove(i + 1);
-                            list.remove(i - 1);
+                            if (list.get(i - 1).type == LexemeTypes.MORE || list.get(i - 1).type == LexemeTypes.LESS) {
+                                list.remove(3);
+                            } else {
+                                list.remove(i + 1);
+                                list.remove(i - 1);
+                            }
+
                         }
                         i = 0;
                         break;
@@ -229,8 +234,23 @@ public class Main {
             prev = list.get(prevPos);
             next = list.get(nextPos);
 
+            if (prev.type == LexemeTypes.MORE || prev.type == LexemeTypes.LESS) {
+                prev = list.get(pos);
+                switch (prev.type) {
+                    case MINUS:
+                        return -1 * Long.parseLong(next.value);
+                    case PLUS:
+                        return Long.parseLong(next.value);
+                }
+
+            }
             return Long.parseLong(prev.value) - Long.parseLong(next.value);
         } else {
+            if (list.size() == 3) {
+                if (list.get(0).type == LexemeTypes.MINUS) {
+                    return -1 * Long.parseLong(list.get(1).value);
+                }
+            }
             if (prevPos < 0) {
                 prev = new Main.Lexeme(Main.LexemeTypes.NUM, String.valueOf(0));
                 next = list.get(nextPos);

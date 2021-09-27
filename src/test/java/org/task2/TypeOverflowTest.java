@@ -53,4 +53,12 @@ public class TypeOverflowTest {
         Assertions.assertEquals(expected,actual);
     }
 
+    @Test
+    @DisplayName("expect 1. testcase: -1_000_000_000_000_000_000")
+    void t6() {
+        long expected = -1_000_000_000_000_000_000L;
+        long actual = Main.process("-1000000000000000000");
+        Assertions.assertEquals(expected,actual);
+    }
+
 }

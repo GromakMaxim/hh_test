@@ -442,9 +442,18 @@ class AlternativeTest {
     }
 
     @Test
-    @DisplayName("expect 0. testcase: d100*d100*d100")
+    @DisplayName("overflow")
     void t55() {
         long expected = 0;
         Main.parse("d100*d100*d100");
+    }
+
+
+    @Test
+    @DisplayName("expect 0. testcase: 1<-(3>2)")
+    void t56() {
+        long expected = 0;
+        long actual = Main.process("1<-(3>2)");
+        Assertions.assertEquals(expected, actual);
     }
 }

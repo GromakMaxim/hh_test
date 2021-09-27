@@ -6,9 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-    private static int totalOperations = 0;
-    private static TreeMap<Long, Integer> stat = new TreeMap<>();
-    public static ArrayList<String> stringPool = new ArrayList<>();
+    private static TreeMap<Long, Long> stat;
+    public static ArrayList<String> stringPool;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -17,6 +16,8 @@ public class Main {
     }
 
     public static void parse(String input) {
+        stat = new TreeMap<>();
+        stringPool = new ArrayList<>();
         if (input.contains("d")) {
             generateStrings(input);
             statistics();
@@ -77,11 +78,10 @@ public class Main {
 
     public static long calculate(List<Main.Lexeme> list) {
         long value = 0;
-        Optional multdivCount = list.stream()
-                .filter(l -> l.type == Main.LexemeTypes.MULT || l.type == Main.LexemeTypes.DIV)
-                .findFirst();
+        boolean multdivIsPresent = list.stream()
+                .anyMatch(l -> l.type == Main.LexemeTypes.MULT || l.type == Main.LexemeTypes.DIV);
 
-        if (multdivCount.isPresent()) {
+        if (multdivIsPresent) {
             for (int i = 0; i < list.size(); i++) {
                 Main.Lexeme l = list.get(i);
                 switch (l.type) {
@@ -103,11 +103,10 @@ public class Main {
             }
         }
 
-        Optional plusminus = list.stream()
-                .filter(l -> l.type == Main.LexemeTypes.PLUS || l.type == Main.LexemeTypes.MINUS)
-                .findFirst();
+        boolean plusminusIsPresent = list.stream()
+                .anyMatch(l -> l.type == Main.LexemeTypes.PLUS || l.type == Main.LexemeTypes.MINUS);
 
-        if (plusminus.isPresent()) {
+        if (plusminusIsPresent) {
             for (int i = 0; i < list.size() - 1; i++) {
                 Main.Lexeme l = list.get(i);
                 switch (l.type) {
@@ -139,11 +138,10 @@ public class Main {
             }
         }
 
-        Optional moreless = list.stream()
-                .filter(l -> l.type == Main.LexemeTypes.MORE || l.type == Main.LexemeTypes.LESS)
-                .findFirst();
+        boolean morelessIsPresent = list.stream()
+                .anyMatch(l -> l.type == Main.LexemeTypes.MORE || l.type == Main.LexemeTypes.LESS);
 
-        if (moreless.isPresent()) {
+        if (morelessIsPresent) {
             for (int i = 0; i < list.size(); i++) {
                 Main.Lexeme l = list.get(i);
                 switch (l.type) {
@@ -169,8 +167,7 @@ public class Main {
     }
 
     public static boolean isBracketsStillExist(List<Main.Lexeme> list) {
-        long bracketsNumber = list.stream().filter(l -> l.type == Main.LexemeTypes.LBRACKET).count();
-        return bracketsNumber > 0;
+        return list.stream().anyMatch(l -> l.type == LexemeTypes.LBRACKET);
     }
 
 
@@ -178,20 +175,14 @@ public class Main {
         long v1 = Long.parseLong(list.get(pos - 1).value);
         long v2 = Long.parseLong(list.get(pos + 1).value);
 
-        if (v1 > v2) {
-            return 1;
-        }
-        return 0;
+        return (v1 > v2) ? 1L : 0L;
     }
 
-    public static int calcLESS(int pos, List<Main.Lexeme> list) {
+    public static long calcLESS(int pos, List<Main.Lexeme> list) {
         long v1 = Long.parseLong(list.get(pos - 1).value);
         long v2 = Long.parseLong(list.get(pos + 1).value);
 
-        if (v1 < v2) {
-            return 1;
-        }
-        return 0;
+        return (v1 < v2) ? 1L : 0L;
     }
 
 
@@ -211,15 +202,9 @@ public class Main {
 
         }
 
-        if (prev == null && next == null) {
-            return 0;
-        }
-        if (prev == null) {
-            return Long.parseLong(next.value);
-        }
-        if (next == null) {
-            return Long.parseLong(next.value);
-        }
+        if (prev == null && next == null) return 0;
+        if (prev == null) return Long.parseLong(next.value);
+        if (next == null) return Long.parseLong(next.value);
         return Long.parseLong(prev.value) + Long.parseLong(next.value);
     }
 
@@ -266,21 +251,16 @@ public class Main {
     }
 
     public static long calcMULT(int pos, List<Main.Lexeme> list) {
-        Main.Lexeme l1 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos - 1).value);
-        Main.Lexeme l2 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos + 1).value);
-        long v1 = Long.parseLong(l1.value);
-        long v2 = Long.parseLong(l2.value);
+        long v1 = Long.parseLong(list.get(pos - 1).value);
+        long v2 = Long.parseLong(list.get(pos + 1).value);
         return v1 * v2;
     }
 
     public static long calcDIV(int pos, List<Main.Lexeme> list) {
-        Main.Lexeme l1 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos - 1).value);
-        Main.Lexeme l2 = new Main.Lexeme(Main.LexemeTypes.NUM, list.get(pos + 1).value);
-        long v1 = Long.parseLong(l1.value);
-        long v2 = Long.parseLong(l2.value);
+        long v1 = Long.parseLong(list.get(pos - 1).value);
+        long v2 = Long.parseLong(list.get(pos + 1).value);
         return v1 / v2;
     }
-
 
     public static void generateStrings(String input) {
         Pattern pattern = Pattern.compile("[d]\\d+");//try to find things like: d*
@@ -291,38 +271,53 @@ public class Main {
                 String target = matcher.group();
                 String replacement = String.valueOf(i);
                 String newString = input.replaceFirst(target, replacement);
-                stringPool.add(newString);
+                if (!newString.contains("d")) {
+                    long resultLine = process(newString);
+                    statistics(resultLine);
+                } else {
+                    stringPool.add(newString);
+                }
             }
             break;
         }
 
-        for (int i = 0; i < stringPool.size(); i++) {
-            String current = stringPool.get(i);
-            if (current.contains("d")) {
-                stringPool.remove(i);
-                generateStrings(current);
+        if (stringPool.size() != 0) {
+
+            for (int i = 0; i < stringPool.size(); i++) {
+                String current = stringPool.get(i);
+                if (current.contains("d")) {
+                    stringPool.remove(i);
+                    generateStrings(current);
+                }
             }
         }
     }
 
-    public static void statistics() {
-        for (String str : stringPool) {
-            long result = process(str);
-            totalOperations++;
-
-            boolean isExist = stat.containsKey(result);
-            if (!isExist) {
-                stat.put(result, 1);
-            } else {
-                stat.put(result, stat.get(result) + 1);
-            }
+    public static void statistics(long value) {
+        boolean isExist = stat.containsKey(value);
+        if (!isExist) {
+            stat.put(value, 1L);
+        } else {
+            stat.put(value, stat.get(value) + 1L);
         }
+    }
 
-        for (Map.Entry<Long, Integer> entry : stat.entrySet()) {
-            double result = ((double) entry.getValue() / (double) totalOperations) * 100;
-            DecimalFormat f = new DecimalFormat("##.00");
+    public static void statistics() {
+        long operations = stat.values().stream().mapToLong(i -> i).sum();
 
-            System.out.println(entry.getKey() + " " + f.format(result).replace(',', '.'));
+        for (Map.Entry<Long, Long> entry : stat.entrySet()) {
+            double result = ((double) entry.getValue() / (double) operations) * 100;
+            result = Math.round(result * 100.0) / 100.0;
+
+            String print;
+            if (result >= 1) {
+                DecimalFormat f = new DecimalFormat("##.00");
+                print = f.format(result).replace(",", ".");
+            } else {
+                print = String.valueOf(result);
+            }
+
+            System.out.println(entry.getKey() + " " + print);
         }
     }
 

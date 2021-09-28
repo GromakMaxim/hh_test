@@ -26,20 +26,18 @@ public class Main {
     }
 
     public static long process(String input) {
-        ArrayList<Lexeme> lexemes = lexicalAnalyzer(input);
+        LinkedList<Lexeme> lexemes = lexicalAnalyzer(input);
         LexemeBuffer lb = new LexemeBuffer(lexemes);
-        List<Lexeme> tempList = new ArrayList<>(lb.lexemes);
+        LinkedList<Lexeme> tempList = new LinkedList<>(lb.lexemes);
 
         return findExpressionInBrackets(tempList);
     }
 
-    public static long findExpressionInBrackets(List<Lexeme> list) {
+    public static long findExpressionInBrackets(LinkedList<Lexeme> list) {
         Optional<Lexeme> optional = list.stream()
                 .filter(l -> l.type == LexemeTypes.LBRACKET).findFirst();
 
         if (optional.isPresent()) {
-            List<Lexeme> resultList = new ArrayList<>();
-
             int lbracketPos = 0;
             int rbracketPos = 0;
 
@@ -53,14 +51,11 @@ public class Main {
                 }
             }
 
-            int index = lbracketPos + 1;
-            while (index < rbracketPos) {
-                resultList.add(list.get(index));
-                index++;
-            }
+            LinkedList<Lexeme> templist = new LinkedList<>(list.subList(lbracketPos + 1, rbracketPos));
 
-            long value = calculate(resultList);
-            index = rbracketPos;
+            long value = calculate(templist);
+
+            int index = rbracketPos;
             while (index >= lbracketPos) {
                 list.remove(index);
                 index--;
@@ -74,12 +69,12 @@ public class Main {
         return calculate(list);
     }
 
-    public static long calculate(List<Lexeme> list) {
+    public static long calculate(LinkedList<Lexeme> list) {
         long value = 0;
         boolean multdivIsPresent = list.stream()
                 .anyMatch(l -> l.type == LexemeTypes.MULT || l.type == LexemeTypes.DIV);
 
-        if (multdivIsPresent) {
+        while (multdivIsPresent) {
             for (int i = 0; i < list.size(); i++) {
                 Lexeme l = list.get(i);
                 switch (l.type) {
@@ -99,12 +94,15 @@ public class Main {
                         break;
                 }
             }
+            multdivIsPresent = list.stream()
+                    .anyMatch(l -> l.type == LexemeTypes.MULT || l.type == LexemeTypes.DIV);
         }
 
         boolean plusminusIsPresent = list.stream()
                 .anyMatch(l -> l.type == LexemeTypes.PLUS || l.type == LexemeTypes.MINUS);
 
-        if (plusminusIsPresent) {
+        while (plusminusIsPresent) {
+
             for (int i = 0; i < list.size() - 1; i++) {
                 Lexeme l = list.get(i);
                 switch (l.type) {
@@ -134,12 +132,14 @@ public class Main {
                         break;
                 }
             }
+            plusminusIsPresent = list.stream()
+                    .anyMatch(l -> l.type == LexemeTypes.PLUS || l.type == LexemeTypes.MINUS);
         }
 
         boolean morelessIsPresent = list.stream()
                 .anyMatch(l -> l.type == LexemeTypes.MORE || l.type == LexemeTypes.LESS);
 
-        if (morelessIsPresent) {
+        while (morelessIsPresent) {
             for (int i = 0; i < list.size(); i++) {
                 Lexeme l = list.get(i);
                 switch (l.type) {
@@ -159,7 +159,10 @@ public class Main {
                         break;
                 }
             }
+            morelessIsPresent = list.stream()
+                    .anyMatch(l -> l.type == LexemeTypes.MORE || l.type == LexemeTypes.LESS);
         }
+
         if (value == 0) return Long.parseLong(list.get(0).value);
         return value;
     }
@@ -280,8 +283,8 @@ public class Main {
     }
 
     public static void statistics(long value) {
-        stat.computeIfPresent(value, (k, v)->++v);
-        stat.computeIfAbsent(value, (k) -> stat.put(k,1L));
+        stat.computeIfPresent(value, (k, v) -> ++v);
+        stat.computeIfAbsent(value, (k) -> stat.put(k, 1L));
     }
 
     public static void statistics() {
@@ -312,9 +315,9 @@ public class Main {
 
     public static class LexemeBuffer {
         private int position;
-        public ArrayList<Lexeme> lexemes;
+        public LinkedList<Lexeme> lexemes;
 
-        public LexemeBuffer(ArrayList<Lexeme> lexemes) {
+        public LexemeBuffer(LinkedList<Lexeme> lexemes) {
             this.lexemes = lexemes;
         }
 
@@ -350,8 +353,8 @@ public class Main {
     }
 
 
-    public static ArrayList<Lexeme> lexicalAnalyzer(String expression) {
-        ArrayList<Lexeme> lexemes = new ArrayList<>();
+    public static LinkedList<Lexeme> lexicalAnalyzer(String expression) {
+        LinkedList<Lexeme> lexemes = new LinkedList<>();
         int pos = 0;
         while (pos < expression.length()) {
             char ch = expression.charAt(pos);

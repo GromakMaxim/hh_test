@@ -269,5 +269,17 @@ public class AdvTests {
 //        String expected = "0 100.00\r\n";
 //        Assertions.assertEquals(expected, actual);
 //    }
+//
+//    @Test
+//    @DisplayName("overflow")
+//    void t20() {
+//        String input = "2+(3-5+8*2-3)";
+//        Main.parse(input);
+//        String actual = output.toString();
+//
+//
+//        String expected = "0 100.00\r\n";
+//        Assertions.assertEquals(expected, actual);
+//    }
 
 }
